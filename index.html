@@ -27,10 +27,16 @@
   .countdown .num{background:rgba(0,0,0,.18);border-radius:10px;padding:6px 12px;font-weight:800;font-size:20px}
   .countdown .lbl{font-size:11px;opacity:.9;text-transform:uppercase;letter-spacing:.5px}
 
+  /* welcome */
+  .welcome{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);margin-top:-24px;
+           position:relative;z-index:2;padding:22px 22px 20px;text-align:center}
+  .welcome h2{margin:0 0 6px;font-size:21px;font-weight:800}
+  .welcome p{margin:0 auto;max-width:560px;color:var(--muted);font-size:14px}
+
   /* quick links */
-  .links{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);margin-top:-24px;
-         padding:16px;position:relative;z-index:2;display:flex;gap:12px;flex-wrap:wrap}
-  .links a{flex:1;min-width:180px;text-decoration:none;color:#fff;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+  .links{background:transparent;margin-top:14px;
+         padding:0;position:relative;z-index:2;display:flex;gap:12px;flex-wrap:wrap}
+  .links a{flex:1;min-width:180px;text-decoration:none;color:#fff;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:2px;box-shadow:var(--shadow)}
   .links a.wl{background:linear-gradient(135deg,#2b6cb0,#4299e1)}
   .links a.tc{background:linear-gradient(135deg,#16a34a,#22c55e)}
   .links a .t{font-weight:700;font-size:15px}
@@ -130,6 +136,12 @@
 
 <div class="wrap">
 
+  <!-- WELCOME -->
+  <div class="welcome">
+    <h2>👋 Please join!</h2>
+    <p>Welcome to our Spain 2026 squad page — our shared home base for the trip. Please join two important links below 🇪🇸</p>
+  </div>
+
   <!-- LINKS -->
   <div class="links">
     <a class="wl" href="https://wanderlog.com/plan/lbgeydjlwhpzhqic/trip-to-spain/shared" target="_blank" rel="noopener">
@@ -161,6 +173,7 @@
         <div class="body">
           <div class="endpoints">London (LHR) <span class="arrow">→</span> Seville (SVQ)</div>
           <div class="times">15:10 → 19:00 · VY6023</div>
+          <a class="book" href="https://uk.trip.com/flights/showfarefirst?dcity=lon&acity=svq&ddate=2026-06-26&rdate=2026-06-29&triptype=ow&class=y&lowpricesource=searchform&quantity=1&searchboxarg=t&nonstoponly=off&locale=en-GB&curr=GBP" target="_blank" rel="noopener">🔎 book here ↗</a>
         </div>
         <span class="tag">🟡 Vueling</span>
       </div>
