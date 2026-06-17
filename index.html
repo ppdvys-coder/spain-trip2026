@@ -51,6 +51,9 @@
   .leg .times{font-size:13px;color:var(--muted);margin-top:3px}
   .leg .tag{font-size:12px;background:#f3ece0;padding:3px 9px;border-radius:99px;white-space:nowrap}
   .leg .date{font-size:12px;font-weight:700;color:var(--accent);min-width:54px}
+  .leg .book{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;text-decoration:none;
+             color:#fff;background:var(--accent);padding:6px 11px;border-radius:8px;font-weight:600;white-space:nowrap}
+  .leg .book:hover{filter:brightness(1.05)}
 
   /* accommodation */
   .accom{display:grid;grid-template-columns:1fr;gap:0}
@@ -181,6 +184,7 @@
         <div class="body">
           <div class="endpoints">Seville <span class="arrow">→</span> Granada</div>
           <div class="times">15:45 → 18:45 · ALSA</div>
+          <a class="book" href="https://www.rome2rio.com/map/Seville/Granada?route=Bus&segment=0&departureDate=2026-06-27&accom_comparison=true" target="_blank" rel="noopener">🔎 Compare & book ↗</a>
         </div>
         <span class="tag">🚌 ALSA</span>
       </div>
@@ -189,6 +193,7 @@
         <div class="body">
           <div class="endpoints">Granada <span class="arrow">→</span> Málaga</div>
           <div class="times">09:00 → 10:30 · ALSA</div>
+          <a class="book" href="https://www.rome2rio.com/map/Granada/M%C3%A1laga?route=Bus&segment=0&accom_comparison=true" target="_blank" rel="noopener">🔎 Compare & book ↗</a>
         </div>
         <span class="tag">🚌 ALSA</span>
       </div>
@@ -206,7 +211,7 @@
 
   <!-- TASK MATRIX -->
   <section>
-    <h2>✅ Booking Tasks </h2>
+    <h2>✅ Booking Task</h2>
     <p class="sub">Tap a cell to mark it done. Shared live with the whole squad.</p>
     <div class="who-am-i" id="whoami"><span>Which one are you?</span></div>
     <div class="matrix-scroll">
