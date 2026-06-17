@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Spain Trip 2026 — Squad Tracker</title>
+<meta name="description" content="Shared, editable planning tracker for our trip to Spain, 26 Jun – 1 Jul 2026." />
+<style>
+  :root{
+    --bg:#fdf6ec; --card:#fff; --ink:#2a2118; --muted:#8a7d6b; --line:#ece2d2;
+    --accent:#e0531f; --accent-soft:#fbe7dd; --gold:#f2a900; --green:#1f9d55;
+    --green-soft:#e2f5ea; --blue:#2b6cb0; --shadow:0 6px 24px rgba(80,50,20,.08); --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px 80px}
+  a{color:var(--blue)}
+
+  header{background:linear-gradient(135deg,#e0531f,#f2a900);color:#fff;padding:38px 18px 30px;text-align:center;position:relative;overflow:hidden}
+  header h1{margin:0;font-size:clamp(28px,6vw,44px);letter-spacing:-.5px;font-weight:800}
+  header .dates{margin-top:8px;font-size:17px;opacity:.95;font-weight:500}
+  header .route{margin-top:4px;font-size:14px;opacity:.85}
+  .sun{position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.12)}
+  .countdown{display:inline-flex;gap:8px;margin-top:16px;align-items:center}
+  .countdown .num{background:rgba(0,0,0,.18);border-radius:10px;padding:6px 12px;font-weight:800;font-size:20px}
+  .countdown .lbl{font-size:11px;opacity:.9;text-transform:uppercase;letter-spacing:.5px}
+
+  /* quick links */
+  .links{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);margin-top:-24px;
+         padding:16px;position:relative;z-index:2;display:flex;gap:12px;flex-wrap:wrap}
+  .links a{flex:1;min-width:180px;text-decoration:none;color:#fff;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+  .links a.wl{background:linear-gradient(135deg,#2b6cb0,#4299e1)}
+  .links a.tc{background:linear-gradient(135deg,#16a34a,#22c55e)}
+  .links a .t{font-weight:700;font-size:15px}
+  .links a .d{font-size:12px;opacity:.9}
+
+  section{margin-top:34px}
+  section>h2{font-size:20px;margin:0 0 14px;display:flex;align-items:center;gap:9px}
+  .sub{color:var(--muted);font-size:13px;margin:-8px 0 16px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:6px 18px;margin-bottom:16px}
+
+  /* flights & coaches rows */
+  .leg{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line)}
+  .leg:first-child{border-top:none}
+  .leg .body{flex:1}
+  .leg .endpoints{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;flex-wrap:wrap}
+  .leg .arrow{color:var(--accent)}
+  .leg .times{font-size:13px;color:var(--muted);margin-top:3px}
+  .leg .tag{font-size:12px;background:#f3ece0;padding:3px 9px;border-radius:99px;white-space:nowrap}
+  .leg .date{font-size:12px;font-weight:700;color:var(--accent);min-width:54px}
+
+  /* accommodation */
+  .accom{display:grid;grid-template-columns:1fr;gap:0}
+  .accom .row{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+  .accom .row:first-child{border-top:none}
+  .accom .city{font-weight:800;min-width:90px;text-transform:capitalize}
+  .accom .nights{font-size:12px;color:var(--muted)}
+  .accom .fields{flex:1;min-width:200px;display:flex;flex-direction:column;gap:6px}
+  .accom input{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14px;font-family:inherit;background:#fdfbf7}
+  .accom input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+  .accom label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+
+  /* matrix */
+  .who-am-i{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px;font-size:13px;color:var(--muted)}
+  .who-am-i button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 12px;cursor:pointer;font-weight:600;text-transform:capitalize;color:var(--ink)}
+  .who-am-i button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  .matrix-scroll{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--line);background:var(--card)}
+  table.matrix{border-collapse:collapse;width:100%;min-width:560px}
+  table.matrix th,table.matrix td{padding:0;text-align:center}
+  table.matrix thead th{position:sticky;top:0;background:#fff;font-size:13px;padding:12px 6px;border-bottom:2px solid var(--line);text-transform:capitalize;font-weight:700}
+  table.matrix thead th.task-h{text-align:left;padding-left:16px}
+  table.matrix tbody th{position:sticky;left:0;background:#fff;text-align:left;font-weight:600;font-size:13px;
+                        padding:10px 16px;border-bottom:1px solid var(--line);border-right:2px solid var(--line);white-space:nowrap;z-index:1}
+  table.matrix tbody td{border-bottom:1px solid var(--line);height:46px}
+  table.matrix tbody tr:nth-child(even) th,table.matrix tbody tr:nth-child(even) td{background:#fdfaf4}
+  .cell-btn{width:30px;height:30px;border-radius:8px;border:2px solid var(--line);background:#fff;cursor:pointer;
+            font-size:16px;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:.12s;color:var(--green)}
+  .cell-btn:hover{border-color:var(--accent)}
+  .cell-btn.on{background:var(--green-soft);border-color:var(--green)}
+  td.mecol,th.mecol{background:var(--accent-soft) !important}
+
+  .status{font-size:12px;color:var(--muted);margin-top:10px;display:flex;align-items:center;gap:7px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#bbb}
+  .dot.live{background:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+  .dot.off{background:#e0531f;box-shadow:0 0 0 3px var(--accent-soft)}
+
+  .banner{background:#fff8e6;border:1px solid var(--gold);border-radius:12px;padding:14px 16px;font-size:13px;margin:16px 0;color:#7a5b00}
+  .banner b{color:#5a4400}
+  .banner code{background:#fdeec0;padding:1px 5px;border-radius:4px}
+
+  /* itinerary */
+  .itin-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .itin-sync{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .itin-sync .dot{width:8px;height:8px;border-radius:50%;background:#bbb}
+  .itin-sync .dot.live{background:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+  .itin-sync .dot.stale{background:var(--gold);box-shadow:0 0 0 3px #fff3d6}
+  .day{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+  .day-top{display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(90deg,var(--accent-soft),#fff)}
+  .day-top .dnum{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  .day-top .ddate{font-weight:800}
+  .day-top .dwk{font-size:12px;color:var(--muted)}
+  .day-body{padding:6px 18px 12px}
+  .stop{display:flex;gap:12px;padding:10px 0;border-top:1px dashed var(--line)}
+  .stop:first-child{border-top:none}
+  .stop .ic{font-size:17px;width:22px;text-align:center;flex-shrink:0}
+  .stop .s-name{font-weight:600}
+  .stop .s-time{font-size:12px;color:var(--accent);font-weight:600}
+  .stop .s-note{font-size:12px;color:var(--muted)}
+  .stop.chk .s-name{font-weight:500;color:var(--ink)}
+  .stop .s-sub{font-size:12px;color:var(--muted)}
+
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:50px}
+</style>
+</head>
+<body>
+<header>
+  <div class="sun"></div>
+  <h1>🇪🇸 Spain 2026</h1>
+  <div class="dates">26 June – 1 July 2026</div>
+  <div class="route">Seville → Granada → Málaga</div>
+  <div class="countdown" id="countdown"></div>
+</header>
+
+<div class="wrap">
+
+  <!-- LINKS -->
+  <div class="links">
+    <a class="wl" href="https://wanderlog.com/plan/lbgeydjlwhpzhqic/trip-to-spain/shared" target="_blank" rel="noopener">
+      <span class="t">📍 Wanderlog plan</span><span class="d">Full day-by-day itinerary & map</span>
+    </a>
+    <a class="tc" href="https://tricount.com/tAWFrWdLFTDvqFeixI" target="_blank" rel="noopener">
+      <span class="t">💶 Tricount</span><span class="d">Split & track shared expenses</span>
+    </a>
+  </div>
+
+  <div id="config-banner"></div>
+
+  <!-- ITINERARY (live from Wanderlog) -->
+  <section>
+    <div class="itin-head">
+      <h2 style="margin:0">🗺️ Itinerary</h2>
+      <span class="itin-sync"><span class="dot" id="itin-dot"></span><span id="itin-sync">Loading…</span></span>
+    </div>
+    <p class="sub" style="margin-top:8px">Pulled live from the Wanderlog plan each time you open this page. Edit the plan in Wanderlog and it shows up here.</p>
+    <div id="itinerary"></div>
+  </section>
+
+  <!-- FLIGHTS -->
+  <section>
+    <h2>✈️ Flights</h2>
+    <div class="card">
+      <div class="leg">
+        <div class="date">26 Jun</div>
+        <div class="body">
+          <div class="endpoints">London (LHR) <span class="arrow">→</span> Seville (SVQ)</div>
+          <div class="times">15:10 → 19:00 · VY6023</div>
+        </div>
+        <span class="tag">🟡 Vueling</span>
+      </div>
+      <div class="leg">
+        <div class="date">1 Jul</div>
+        <div class="body">
+          <div class="endpoints">Málaga (AGP) <span class="arrow">→</span> London (STN)</div>
+          <div class="times">12:50 → 14:45 · FR8165</div>
+        </div>
+        <span class="tag">🔵 Ryanair</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- COACHES -->
+  <section>
+    <h2>🚌 Coaches</h2>
+    <div class="card">
+      <div class="leg">
+        <div class="date">28 Jun</div>
+        <div class="body">
+          <div class="endpoints">Seville <span class="arrow">→</span> Granada</div>
+          <div class="times">15:45 → 18:45 · ALSA</div>
+        </div>
+        <span class="tag">🚌 ALSA</span>
+      </div>
+      <div class="leg">
+        <div class="date">30 Jun</div>
+        <div class="body">
+          <div class="endpoints">Granada <span class="arrow">→</span> Málaga</div>
+          <div class="times">09:00 → 10:30 · ALSA</div>
+        </div>
+        <span class="tag">🚌 ALSA</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCOMMODATION -->
+  <section>
+    <h2>🏨 Accommodation</h2>
+    <p class="sub">Tap a field to fill in where we're staying & who's in each — saves for everyone.</p>
+    <div class="card">
+      <div class="accom" id="accom"></div>
+    </div>
+  </section>
+
+  <!-- TASK MATRIX -->
+  <section>
+    <h2>✅ Tasks — done by whom</h2>
+    <p class="sub">Tap a cell to mark it done. Shared live with the whole squad.</p>
+    <div class="who-am-i" id="whoami"><span>Which one are you?</span></div>
+    <div class="matrix-scroll">
+      <table class="matrix" id="matrix"></table>
+    </div>
+    <div class="status"><span class="dot" id="dot"></span><span id="status">Connecting…</span></div>
+  </section>
+
+  <footer>
+    <p>Made for the squad 🧡 · source of truth for the itinerary is the <a href="https://wanderlog.com/plan/lbgeydjlwhpzhqic/trip-to-spain/shared" target="_blank" rel="noopener">Wanderlog</a></p>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* =====================================================================
+   1) PASTE YOUR SUPABASE KEYS HERE  (see README — one-time, ~5 min)
+   ===================================================================== */
+const SUPABASE_URL = "https://grkgakxutvpxzourmvmr.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdya2dha3h1dHZweHpvdXJtdm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NDU2MTMsImV4cCI6MjA5NzIyMTYxM30.lXewHGYEzkshOfr4O0RED270IIx5mGX9Tqm6WGvmIHQ";
+
+/* =====================================================================
+   2) TRIP DATA — edit freely
+   ===================================================================== */
+const PEOPLE = ["pd","kukkik","muzzy","peem","vic","phoom"];
+
+const TASKS = [
+  "flight depart",
+  "alcazar ticket",
+  "alhambra ticket",
+  "coach:seville to granada",
+  "coach:granada to malaga",
+  "accom:seville",
+  "accom:granada",
+  "accom:malaga",
+  "flight return",
+];
+
+const ACCOM = [
+  { city:"seville", nights:"2 nights · 26–27 Jun" },
+  { city:"granada", nights:"2 nights · 28–29 Jun" },
+  { city:"malaga",  nights:"1 night · 30 Jun" },
+];
+
+const TRIP_START = "2026-06-26";
+
+// Your Wanderlog share link — the itinerary is pulled live from here.
+const WANDERLOG_URL = "https://wanderlog.com/plan/lbgeydjlwhpzhqic/trip-to-spain/shared";
+
+// OPTIONAL but recommended for reliable live sync: your Cloudflare Worker URL
+// (see README "Part C"). When set, the site gets clean itinerary JSON from it
+// on every open. If blank, it falls back to best-effort public proxies.
+const ITINERARY_ENDPOINT = "https://black-shape-3627.ppdvys.workers.dev/";
+
+// Baked-in snapshot of the real plan — shown instantly, and as a fallback
+// if the live fetch can't reach Wanderlog. Auto-refreshed by the live fetch.
+const ITINERARY_SNAPSHOT = {"title":"Trip to Spain","startDate":"2026-06-26","endDate":"2026-07-01","days":[{"date":"2026-06-26","heading":"","items":[{"kind":"place","name":"Seville Airport","time":"15:10 – 19:00","note":""},{"kind":"check","name":"hotel","sub":[]},{"kind":"check","name":"dinner","sub":[]},{"kind":"place","name":"Plaza de España","time":"","note":"sunset"},{"kind":"place","name":"Setas de Sevilla","time":"","note":""}]},{"date":"2026-06-27","heading":"","items":[{"kind":"place","name":"Catedral de Sevilla","time":"09:00 – 10:00","note":"ticket needed"},{"kind":"place","name":"La Giralda","time":"10:00 – 11:00","note":""},{"kind":"check","name":"lunch","sub":[]},{"kind":"place","name":"Royal Alcázar of Seville","time":"","note":""},{"kind":"place","name":"Santa Cruz, Seville","time":"","note":"city stroll"},{"kind":"place","name":"Parque de María Luisa","time":"","note":""},{"kind":"place","name":"Alcazaba","time":"","note":""},{"kind":"place","name":"Museo de la Alhambra","time":"","note":""}]},{"date":"2026-06-28","heading":"","items":[{"kind":"check","name":"brunch","sub":[]},{"kind":"place","name":"Estación de Autobuses “Plaza de Armas”","time":"15:45 – 18:45","note":""},{"kind":"place","name":"Granada ALSA","time":"","note":""},{"kind":"check","name":"dinner","sub":[]},{"kind":"place","name":"Granada","time":"","note":""}]},{"date":"2026-06-29","heading":"","items":[{"kind":"place","name":"Alhambra","time":"","note":""}]},{"date":"2026-06-30","heading":"","items":[{"kind":"place","name":"Granada ALSA","time":"09:00 – 10:30","note":""},{"kind":"place","name":"Estación de Autobuses de Málaga","time":"","note":""}]},{"date":"2026-07-01","heading":"","items":[{"kind":"place","name":"Málaga-Costa del Sol Airport","time":"12:50 – 14:45","note":""},{"kind":"place","name":"London Stansted Airport","time":"","note":""}]}],"overview":[{"heading":"Places to visit","items":[{"kind":"place","name":"Madrid","time":"","note":""}]}]};
+
+/* =====================================================================
+   No need to edit below.
+   ===================================================================== */
+const key = (task, person) => `check:${task}::${person}`;
+const slug = s => s.replace(/[^a-z0-9]+/gi,"-").toLowerCase();
+let state = {};            // key -> value (string)
+let me = localStorage.getItem("spain-me") || "";
+let sb = null, online = false;
+
+const isConfigured = SUPABASE_URL && SUPABASE_ANON_KEY;
+
+/* ---------- countdown ---------- */
+(function(){
+  const start = new Date(TRIP_START+"T00:00:00");
+  const days = Math.ceil((start - new Date())/86400000);
+  const el = document.getElementById("countdown");
+  if (days>0) el.innerHTML = `<div class="num">${days}</div><div class="lbl">days to go</div>`;
+  else if (days===0) el.innerHTML = `<div class="num">¡Hoy!</div>`;
+  else el.innerHTML = `<div class="lbl">¡Buen viaje! 🌅</div>`;
+})();
+
+/* ---------- itinerary: render ---------- */
+const WK = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function stopIcon(it){
+  if(it.kind==="check"){
+    const n=(it.name||"").toLowerCase();
+    if(/breakfast|brunch/.test(n))return "🥐"; if(/lunch/.test(n))return "🥗";
+    if(/dinner/.test(n))return "🍽️"; if(/hotel|accom|stay/.test(n))return "🛏️"; return "☑️";
+  }
+  const n=(it.name||"").toLowerCase();
+  if(/airport/.test(n))return "✈️"; if(/autobuses|alsa|bus|coach|estaci/.test(n))return "🚌";
+  if(/catedral|giralda|mosque|mezquita/.test(n))return "⛪"; if(/alcázar|alcazar|alhambra|alcazaba|palace/.test(n))return "🏰";
+  if(/museo|museum/.test(n))return "🖼️"; if(/parque|park|jard/.test(n))return "🌳";
+  if(/plaza|setas|square/.test(n))return "📸"; return "📍";
+}
+function renderItinerary(data){
+  const box=document.getElementById("itinerary");
+  const days=(data.days||[]).filter(d=>d.items&&d.items.length);
+  box.innerHTML = days.map((d,i)=>{
+    const dt=new Date(d.date+"T00:00:00");
+    const dd=isNaN(dt)?d.date:`${dt.getDate()} ${MON[dt.getMonth()]}`;
+    const wk=isNaN(dt)?"":WK[dt.getDay()];
+    const stops=d.items.map(it=>{
+      const sub=(it.sub&&it.sub.length)?`<div class="s-sub">${it.sub.map(s=>"• "+esc(s)).join("&nbsp;&nbsp;")}</div>`:"";
+      const time=it.time?`<span class="s-time">${esc(it.time)}</span> · `:"";
+      const note=it.note?`<div class="s-note">${esc(it.note)}</div>`:"";
+      return `<div class="stop ${it.kind==='check'?'chk':''}">
+        <div class="ic">${stopIcon(it)}</div>
+        <div><div class="s-name">${time}${esc(it.name||"")}</div>${note}${sub}</div>
+      </div>`;
+    }).join("");
+    return `<div class="day">
+      <div class="day-top"><div class="dnum">${i+1}</div><div><div class="ddate">${dd}</div><div class="dwk">${wk}${d.heading?" · "+esc(d.heading):""}</div></div></div>
+      <div class="day-body">${stops}</div>
+    </div>`;
+  }).join("");
+}
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+function setItinSync(cls,msg){
+  document.getElementById("itin-dot").className="dot "+cls;
+  document.getElementById("itin-sync").textContent=msg;
+}
+
+/* ---------- itinerary: live fetch + parse from Wanderlog ---------- */
+// Extract window.__MOBX_STATE__ from fetched HTML and shape it like the snapshot.
+function parseWanderlogHTML(html){
+  const marker="window.__MOBX_STATE__";
+  let i=html.indexOf(marker); if(i<0) throw new Error("no state");
+  i=html.indexOf("{",i);
+  let depth=0,inStr=false,esc=false,start=i;
+  for(;i<html.length;i++){ const c=html[i];
+    if(inStr){ if(esc)esc=false; else if(c==="\\")esc=true; else if(c==='"')inStr=false; }
+    else { if(c==='"')inStr=true; else if(c==="{")depth++; else if(c==="}"){ depth--; if(depth===0){ i++; break; } } }
+  }
+  const o=JSON.parse(html.slice(start,i));
+  const tp=o.tripPlanStore.data.tripPlan;
+  const dtext=v=>{ if(v==null)return ""; if(typeof v==="string"){ try{const d=JSON.parse(v); if(d&&d.ops) return d.ops.map(x=>typeof x.insert==="string"?x.insert:"").join("").trim();}catch(e){} return v.trim(); } if(v.ops)return v.ops.map(x=>typeof x.insert==="string"?x.insert:"").join("").trim(); if(v.text)return dtext(v.text); return ""; };
+  const pname=b=>{ const p=b.place||b; return (p&&(p.name||p.customName))||null; };
+  const days=[],overview=[];
+  for(const s of (tp.itinerary.sections||[])){
+    const heading=dtext(s.heading), items=[];
+    for(const b of (s.blocks||[])){
+      if(b.place) items.push({kind:"place",name:pname(b),time:[b.startTime,b.endTime].filter(Boolean).join(" – "),note:dtext(b.text)});
+      else if(b.items) items.push({kind:"check",name:dtext(b.title)||"checklist",sub:(b.items||[]).map(it=>dtext(it.text||it.name)).filter(Boolean)});
+      else { const t=dtext(b.text); if(t) items.push({kind:"note",name:t}); }
+    }
+    if(s.date) days.push({date:s.date,heading,items});
+    else if(heading&&items.length) overview.push({heading,items});
+  }
+  return {title:tp.title,startDate:tp.startDate,endDate:tp.endDate,days,overview};
+}
+async function refreshItinerary(){
+  // Preferred: your own Cloudflare Worker returns clean JSON directly (reliable).
+  if(ITINERARY_ENDPOINT){
+    try{
+      const res=await fetch(ITINERARY_ENDPOINT,{cache:"no-store"});
+      if(res.ok){
+        const data=await res.json();
+        if(data && data.days && data.days.length){
+          renderItinerary(data);
+          try{ localStorage.setItem("spain-itin",JSON.stringify(data)); }catch(e){}
+          setItinSync("live","Synced live from Wanderlog just now");
+          return;
+        }
+      }
+    }catch(e){ /* fall through to public proxies */ }
+  }
+  // Fallback: best-effort public CORS proxies (a static page can't fetch wanderlog.com directly).
+  const proxies=[
+    u=>"https://api.allorigins.win/raw?url="+encodeURIComponent(u),
+    u=>"https://corsproxy.io/?url="+encodeURIComponent(u),
+    u=>"https://thingproxy.freeboard.io/fetch/"+u,
+  ];
+  for(const mk of proxies){
+    try{
+      const res=await fetch(mk(WANDERLOG_URL),{cache:"no-store"});
+      if(!res.ok) continue;
+      const html=await res.text();
+      const data=parseWanderlogHTML(html);
+      if(data.days && data.days.length){
+        renderItinerary(data);
+        try{ localStorage.setItem("spain-itin",JSON.stringify(data)); }catch(e){}
+        setItinSync("live","Synced live from Wanderlog just now");
+        return;
+      }
+    }catch(e){ /* try next proxy */ }
+  }
+  setItinSync("stale","Showing last saved plan (couldn't reach Wanderlog)");
+}
+
+/* ---------- render: who am I ---------- */
+function renderWhoami(){
+  const box = document.getElementById("whoami");
+  box.querySelectorAll("button").forEach(b=>b.remove());
+  PEOPLE.forEach(p=>{
+    const b=document.createElement("button");
+    b.textContent=p; if(p===me) b.classList.add("active");
+    b.onclick=()=>{ me = (me===p? "":p); localStorage.setItem("spain-me",me); renderWhoami(); renderMatrix(); };
+    box.appendChild(b);
+  });
+}
+
+/* ---------- render: accommodation ---------- */
+function renderAccom(){
+  const box=document.getElementById("accom");
+  box.innerHTML = ACCOM.map(a=>{
+    const wk=`text:accom-${a.city}-where`, mk=`text:accom-${a.city}-members`;
+    return `<div class="row">
+      <div><div class="city">${a.city}</div><div class="nights">${a.nights}</div></div>
+      <div class="fields">
+        <div><label>Where</label><input data-key="${wk}" placeholder="hotel / airbnb name + link" value="${(state[wk]||"").replace(/"/g,'&quot;')}"></div>
+        <div><label>Who's staying</label><input data-key="${mk}" placeholder="names" value="${(state[mk]||"").replace(/"/g,'&quot;')}"></div>
+      </div>
+    </div>`;
+  }).join("");
+  box.querySelectorAll("input").forEach(inp=>{
+    inp.addEventListener("change",()=>setVal(inp.dataset.key, inp.value));
+  });
+}
+
+/* ---------- render: matrix ---------- */
+function renderMatrix(){
+  const t=document.getElementById("matrix");
+  let head=`<thead><tr><th class="task-h">Task</th>${PEOPLE.map(p=>`<th class="${p===me?'mecol':''}">${p}</th>`).join("")}</tr></thead>`;
+  let body="<tbody>"+TASKS.map(task=>{
+    const cells=PEOPLE.map(p=>{
+      const k=key(task,p), on=state[k]==="1";
+      return `<td class="${p===me?'mecol':''}"><button class="cell-btn ${on?'on':''}" data-task="${task}" data-person="${p}" title="${task} · ${p}">${on?'✓':''}</button></td>`;
+    }).join("");
+    return `<tr><th>${task}</th>${cells}</tr>`;
+  }).join("")+"</tbody>";
+  t.innerHTML=head+body;
+  t.querySelectorAll(".cell-btn").forEach(btn=>{
+    btn.onclick=()=>{
+      const k=key(btn.dataset.task,btn.dataset.person);
+      setVal(k, state[k]==="1" ? "0" : "1");
+    };
+  });
+}
+
+/* ---------- write ---------- */
+async function setVal(k,v){
+  state[k]=v;                       // optimistic
+  renderMatrix(); // cheap; accom inputs keep focus since we don't re-render them here
+  if(!online){ return; }
+  try{
+    await sb.from("trip_state").upsert({ key:k, value:v, updated_at:new Date().toISOString() });
+  }catch(e){ console.error(e); }
+}
+
+/* ---------- load + realtime ---------- */
+async function load(){
+  const { data, error } = await sb.from("trip_state").select("key,value");
+  if(error){ console.error(error); setStatus(false,"Connection problem — check keys / table"); return; }
+  state={}; data.forEach(r=>state[r.key]=r.value);
+  renderAccom(); renderMatrix();
+  setStatus(true);
+}
+
+function setStatus(ok,msg){
+  online=ok;
+  const dot=document.getElementById("dot"), s=document.getElementById("status");
+  dot.className="dot "+(ok?"live":"off");
+  s.textContent = msg || (ok? "Live & shared — everyone sees changes instantly" : "Offline (local only)");
+}
+
+function showConfigBanner(){
+  document.getElementById("config-banner").innerHTML =
+    `<div class="banner">⚙️ <b>Not connected yet.</b> The checklist works locally but won't sync between people until the
+     <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> are added at the top of <code>index.html</code>.
+     See the README for the 5-minute setup.</div>`;
+}
+
+/* ---------- boot ---------- */
+renderWhoami();
+
+// Itinerary: show last-saved (or baked snapshot) instantly, then refresh live.
+(function(){
+  let initial=ITINERARY_SNAPSHOT;
+  try{ const cached=JSON.parse(localStorage.getItem("spain-itin")); if(cached&&cached.days) initial=cached; }catch(e){}
+  renderItinerary(initial);
+  setItinSync("stale","Refreshing from Wanderlog…");
+  refreshItinerary();
+})();
+if(isConfigured){
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  load();
+  // realtime
+  sb.channel("trip").on("postgres_changes",{event:"*",schema:"public",table:"trip_state"},payload=>{
+    const r=payload.new || payload.old;
+    if(!r) return;
+    if(payload.eventType==="DELETE") delete state[r.key]; else state[r.key]=r.value;
+    // don't clobber an input the user is editing
+    const active=document.activeElement;
+    if(!(active && active.dataset && active.dataset.key)) renderAccom();
+    renderMatrix();
+  }).subscribe();
+  // polling fallback (in case realtime isn't enabled)
+  setInterval(()=>{ if(!document.activeElement || !document.activeElement.dataset || !document.activeElement.dataset.key) load(); }, 6000);
+}else{
+  showConfigBanner();
+  renderAccom(); renderMatrix();
+  setStatus(false,"Local only — add Supabase keys to share");
+}
+</script>
+</body>
+</html>
